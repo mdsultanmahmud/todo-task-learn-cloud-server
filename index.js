@@ -35,6 +35,22 @@ async function run() {
             const result = await TodoApp.deleteOne(filter)
             res.send(result)
         })
+
+        // updateIsdone task 
+        app.patch('/donetask/:id', async(req, res) =>{
+            const id = req.params.id 
+            const filter = {
+                _id :new ObjectId(id)
+            }
+            const option = {upsert: true}
+            const updateTask = {
+                $set:{
+                    isDone: true
+                }
+            }
+            const result = await TodoApp.updateOne(filter, updateTask, option)
+            res.send(result)
+        })
     }
     catch {
 
