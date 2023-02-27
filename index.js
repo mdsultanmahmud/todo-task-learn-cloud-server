@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const cors = require('cors')
 const port = 5000
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // password: 3PSQHEdeb_s$#SB
 // username: TodoApp
 
@@ -16,16 +16,24 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const TodoApp  = client.db('TodoApp').collection('todo_tasks')
-        app.post('/addtask', async (req, res) =>{
+        const TodoApp = client.db('TodoApp').collection('todo_tasks')
+        app.post('/addtask', async (req, res) => {
             const task = req.body
             const result = await TodoApp.insertOne(task)
             res.send(result)
         })
 
-        app.get('/getAllTask', async (req, res) =>{
+        app.get('/getAllTask', async (req, res) => {
             const tasks = await TodoApp.find({}).toArray()
             res.send(tasks)
+        })
+        app.delete('/deleteTask/:id', async(req, res) => {
+            const id = req.params.id
+            const filter = {
+                _id: new ObjectId(id)
+            }
+            const result = await TodoApp.deleteOne(filter)
+            res.send(result)
         })
     }
     catch {
