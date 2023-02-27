@@ -22,6 +22,11 @@ async function run() {
             const result = await TodoApp.insertOne(task)
             res.send(result)
         })
+
+        app.get('/getAllTask', async (req, res) =>{
+            const tasks = await TodoApp.find({}).toArray()
+            res.send(tasks)
+        })
     }
     catch {
 
