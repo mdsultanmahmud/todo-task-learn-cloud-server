@@ -24,7 +24,8 @@ async function run() {
         })
 
         app.get('/getAllTask', async (req, res) => {
-            const tasks = await TodoApp.find({}).toArray()
+            const filter = req.query
+            const tasks = await TodoApp.find(filter).toArray()
             res.send(tasks)
         })
         app.delete('/deleteTask/:id', async(req, res) => {
@@ -51,6 +52,26 @@ async function run() {
             const result = await TodoApp.updateOne(filter, updateTask, option)
             res.send(result)
         })
+
+        // edit a task 
+        app.patch('/editedTask/:id', async (req, res) => {
+            const id = req.params.id
+            const editedTask = req.body 
+            const filter = {
+                _id: new ObjectId(id)
+            }
+            const option = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    taskName: editedTask.taskName,
+                    iconURL: editedTask.iconURL,
+                }
+            }
+            const result = await TodoApp.updateOne(filter, updateDoc, option)
+            res.send(result)
+        })
+
+        
     }
     catch {
 
